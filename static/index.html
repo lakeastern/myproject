@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CIS Intel</title>
+<style>
+:root{--bg:#f6f6f3;--panel:#ffffff;--fg:#1f1f1e;--muted:#6b6a64;--line:#e4e3dd;--accent:#1428a0;--accent-fg:#fff;
+--log-bg:#15161a;--log-fg:#d8dae3;--ok:#1a7f37;--err:#c62828;--chip:#eef0fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141413;--panel:#1e1e1d;--fg:#f1f0eb;--muted:#a9a89f;
+--line:#34332f;--accent:#8ea2ff;--accent-fg:#10133a;--log-bg:#0d0e10;--chip:#262a45}}
+:root[data-theme="dark"]{--bg:#141413;--panel:#1e1e1d;--fg:#f1f0eb;--muted:#a9a89f;--line:#34332f;--accent:#8ea2ff;
+--accent-fg:#10133a;--log-bg:#0d0e10;--chip:#262a45}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.6 "Pretendard","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel)}
+header h1{font-size:17px;margin:0;margin-right:auto}
+header h1 small{font-weight:400;color:var(--muted);margin-left:8px;font-size:13px}
+.stats{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--muted)}
+.stats b{color:var(--fg);font-variant-numeric:tabular-nums}
+.stats span{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+.wrap{display:grid;grid-template-columns:380px 1fr;gap:16px;padding:16px 20px;max-width:1600px;margin:0 auto}
+@media (max-width:900px){.wrap{grid-template-columns:1fr;padding:12px 16px}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:16px}
+.card h2{font-size:13px;margin:0 0 10px;color:var(--muted);font-weight:600;letter-spacing:.02em}
+textarea{width:100%;min-height:96px;resize:vertical;padding:10px;border:1px solid var(--line);border-radius:8px;
+background:var(--bg);color:var(--fg);font:inherit}
+textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.examples{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 10px}
+.examples button{border:0;background:var(--chip);color:var(--fg);border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent);font-weight:600;flex:1}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+#log{background:var(--log-bg);color:var(--log-fg);border-radius:8px;padding:10px;height:260px;overflow:auto;
+font:12px/1.55 ui-monospace,"Cascadia Code",Consolas,monospace;white-space:pre-wrap;word-break:break-all;margin:0}
+#status{font-size:12px;margin-top:8px;color:var(--muted)}
+#status.ok{color:var(--ok)} #status.err{color:var(--err)}
+.list{list-style:none;margin:0;padding:0;max-height:320px;overflow:auto}
+.list li{padding:8px 6px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:6px}
+.list li:hover,.list li.active{background:var(--bg)}
+.list .t{font-weight:500;display:block}
+.list .m{font-size:12px;color:var(--muted)}
+.news li{cursor:default}.news a{color:var(--fg);text-decoration:none}.news a:hover{text-decoration:underline}
+.viewer{display:flex;flex-direction:column;min-height:80vh}
+.viewer .bar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.viewer .bar h2{margin:0;margin-right:auto}
+.viewer a{color:var(--accent);font-size:13px}
+iframe{flex:1;width:100%;border:1px solid var(--line);border-radius:8px;background:var(--panel);min-height:78vh}
+.empty{flex:1;display:grid;place-items:center;color:var(--muted);border:1px dashed var(--line);border-radius:8px;min-height:50vh;text-align:center;padding:20px}
+.spin{display:inline-block;width:10px;height:10px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:s .8s linear infinite;vertical-align:-1px;margin-right:6px}
+@keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Image Sensor 사업 인텔리전스<small>AI 에이전트</small></h1>
+  <div class="stats" id="stats"></div>
+</header>
+
+<div class="wrap">
+  <aside>
+    <section class="card">
+      <h2>분석 요청</h2>
+      <textarea id="req" placeholder="예) 중국 CIS 업체들의 최근 200MP 센서 동향과 우리 영향 분석해줘"></textarea>
+      <div class="examples" id="examples"></div>
+      <div class="btns">
+        <button class="btn primary" id="askBtn">분석 요청</button>
+        <button class="btn" id="weeklyBtn" title="7일치 수집 후 주간 동향 리포트 생성">주간 리포트</button>
+        <button class="btn" id="collectBtn" title="LLM 없이 뉴스·주가·논문만 DB에 수집 (비용 없음)">데이터 수집</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>진행 상황</h2>
+      <pre id="log">대기 중</pre>
+      <div id="status"></div>
+    </section>
+
+    <section class="card">
+      <h2>보고서 목록</h2>
+      <ul class="list" id="reports"></ul>
+    </section>
+
+    <section class="card">
+      <h2>최근 수집 기사</h2>
+      <ul class="list news" id="news"></ul>
+    </section>
+  </aside>
+
+  <main class="card viewer">
+    <div class="bar"><h2 id="viewTitle">보고서</h2><span id="viewLinks"></span></div>
+    <div class="empty" id="empty">왼쪽에서 요청을 입력하거나 보고서 목록에서 선택하세요.<br>요청 한 건은 보통 2~4분 걸립니다.</div>
+    <iframe id="frame" hidden title="보고서"></iframe>
+  </main>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const EXAMPLES = [
+  ["경쟁사 차량용 전략", "Sony와 OmniVision의 최근 차량용 이미지센서 전략을 비교하고 우리 대응 방향을 제안해줘"],
+  ["중국 200MP 동향", "중국 CIS 업체들의 최근 200MP 센서 동향과 우리 사업에 미치는 영향을 분석해줘"],
+  ["아이폰 공급망", "애플 아이폰 카메라 이미지센서 공급망 변화 가능성과 삼성의 기회를 분석해줘"],
+  ["주가 비교", "주요 CIS 업체의 최근 3개월 주가 흐름을 비교하고 배경 이슈를 정리해줘"],
+  ["SPAD·이벤트 센서", "SPAD와 이벤트 센서의 최신 기술·논문 트렌드를 요약하고 사업 기회를 짚어줘"],
+];
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = iso => iso ? new Date(iso).toLocaleString("ko-KR", {month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit"}) : "";
+
+EXAMPLES.forEach(([label, text]) => {
+  const b = document.createElement("button");
+  b.textContent = label; b.title = text; b.onclick = () => { $("#req").value = text; $("#req").focus(); };
+  $("#examples").append(b);
+});
+
+async function loadStats() {
+  const s = await (await fetch("/api/stats")).json();
+  $("#stats").innerHTML =
+    `<span>기사 <b>${s.articles}</b></span><span>논문 <b>${s.papers}</b></span><span>종목 <b>${s.tickers}</b></span>` +
+    `<span>인사이트 <b>${s.insights}</b></span><span>보고서 <b>${s.reports}</b></span>` +
+    `<span>마지막 수집 <b>${fmt(s.last_collected) || "-"}</b></span><span>모델 <b>${esc(s.model)}</b></span>`;
+  $("#news").innerHTML = s.recent_articles.map(a =>
+    `<li><a href="${esc(a.url)}" target="_blank" rel="noopener"><span class="t">${esc(a.title)}</span></a>` +
+    `<span class="m">${esc(a.source)} · ${(a.published_at || "").slice(0, 10)} · ${esc(a.category)}</span></li>`).join("") || "<li class='m'>아직 없음</li>";
+}
+
+let currentId = null;
+async function loadReports() {
+  const rs = await (await fetch("/api/reports")).json();
+  $("#reports").innerHTML = rs.map(r =>
+    `<li data-id="${r.id}" class="${r.id === currentId ? "active" : ""}"><span class="t">${esc(r.title)}</span>` +
+    `<span class="m">${fmt(r.created_at)} · ${r.kind === "weekly" ? "주간" : "요청"}</span></li>`).join("") || "<li class='m'>아직 없음</li>";
+  $("#reports").querySelectorAll("li[data-id]").forEach(li => li.onclick = () => showReport(+li.dataset.id, li.querySelector(".t").textContent));
+}
+
+function showReport(id, title) {
+  currentId = id;
+  $("#empty").hidden = true; $("#frame").hidden = false;
+  $("#frame").src = `/reports/${id}`;
+  $("#viewTitle").textContent = title || "보고서";
+  $("#viewLinks").innerHTML = `<a href="/reports/${id}" target="_blank">새 창</a> · <a href="/reports/${id}/md">MD 다운로드</a>`;
+  loadReports();
+}
+
+function setBusy(b) {
+  ["#askBtn", "#weeklyBtn", "#collectBtn"].forEach(s => $(s).disabled = b);
+  $("#askBtn").innerHTML = b ? '<span class="spin"></span>실행 중...' : "분석 요청";
+}
+
+async function start(kind) {
+  const request = $("#req").value.trim();
+  if (kind === "ask" && !request) { $("#req").focus(); return; }
+  setBusy(true);
+  $("#log").textContent = ""; $("#status").className = ""; $("#status").textContent = "";
+  const t0 = Date.now();
+  const r = await fetch("/api/jobs", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({kind, request})});
+  if (!r.ok) { $("#status").className = "err"; $("#status").textContent = (await r.json()).detail; setBusy(false); return; }
+  const {job_id} = await r.json();
+  const es = new EventSource(`/api/jobs/${job_id}/events`);
+  const timer = setInterval(() => { $("#status").textContent = `경과 ${Math.round((Date.now() - t0) / 1000)}초`; }, 1000);
+  es.addEventListener("log", e => { const l = $("#log"); l.textContent += e.data + "\n"; l.scrollTop = l.scrollHeight; });
+  es.addEventListener("end", e => {
+    es.close(); clearInterval(timer); setBusy(false);
+    const d = JSON.parse(e.data), sec = Math.round((Date.now() - t0) / 1000);
+    if (d.status === "done") {
+      $("#status").className = "ok"; $("#status").textContent = `✓ 완료 (${sec}초)`;
+      if (d.report_id) showReport(d.report_id);
+    } else { $("#status").className = "err"; $("#status").textContent = `✗ ${d.error}`; }
+    loadStats(); loadReports();
+  });
+  es.onerror = () => { if (es.readyState === 2) { clearInterval(timer); setBusy(false); } };
+}
+
+$("#askBtn").onclick = () => start("ask");
+$("#weeklyBtn").onclick = () => start("weekly");
+$("#collectBtn").onclick = () => start("collect");
+$("#req").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) start("ask"); });
+$("#frame").addEventListener("load", () => {
+  const h1 = $("#frame").contentDocument?.querySelector("h1");
+  if (h1) $("#viewTitle").textContent = h1.textContent;
+});
+
+loadStats(); loadReports();
+</script>
+</body>
+</html>

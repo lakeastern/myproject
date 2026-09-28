@@ -1,0 +1,7 @@
+# 비밀키
+.env
+# 로컬 DB·로그·캐시
+data/
+logs/
+__pycache__/
+*.pyc

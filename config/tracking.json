@@ -1,0 +1,44 @@
+{
+  "_comment": "이미지센서 사업 동향 파악을 위한 필수 추적 요소(Watchlist). 카테고리별 검색 쿼리, 주요 기업 별칭, 주가 티커, 논문 쿼리를 정의한다. 자유롭게 추가/수정 가능.",
+  "news_topics": [
+    {"category": "samsung",      "label": "삼성 ISOCELL / 자사 동향",   "queries_ko": ["삼성전자 이미지센서", "아이소셀 ISOCELL"], "queries_en": ["Samsung ISOCELL image sensor"]},
+    {"category": "competitor",   "label": "경쟁사 동향",               "queries_ko": ["소니 이미지센서", "옴니비전 이미지센서", "SK하이닉스 이미지센서"], "queries_en": ["Sony Semiconductor Solutions image sensor", "OmniVision image sensor", "SmartSens CMOS sensor", "GalaxyCore image sensor"]},
+    {"category": "customer",     "label": "고객사/세트 동향",           "queries_ko": ["아이폰 카메라 이미지센서", "갤럭시 카메라 센서"], "queries_en": ["iPhone camera sensor supplier", "Xiaomi Vivo Oppo 200MP camera sensor"]},
+    {"category": "technology",   "label": "핵심 기술 트렌드",           "queries_ko": ["적층형 이미지센서", "글로벌 셔터 이미지센서"], "queries_en": ["stacked CMOS image sensor", "LOFIC HDR image sensor", "global shutter sensor", "SPAD sensor", "event-based vision sensor"]},
+    {"category": "application",  "label": "응용처(차량/XR/로봇)",       "queries_ko": ["차량용 이미지센서", "로봇 이미지센서"], "queries_en": ["automotive image sensor", "smart glasses XR image sensor", "humanoid robot vision sensor"]},
+    {"category": "market",       "label": "시장 규모/점유율/가격",       "queries_ko": ["이미지센서 시장 점유율", "CIS 시장 전망"], "queries_en": ["CMOS image sensor market share", "image sensor market forecast Yole"]},
+    {"category": "supply_chain", "label": "공급망/팹/정책",             "queries_ko": ["이미지센서 파운드리", "소니 반도체 팹"], "queries_en": ["image sensor foundry capacity", "CIS fab investment"]}
+  ],
+  "entities": {
+    "Samsung":   ["삼성", "Samsung", "ISOCELL", "아이소셀"],
+    "Sony":      ["소니", "Sony"],
+    "OmniVision":["옴니비전", "OmniVision", "Will Semi", "韦尔"],
+    "SK hynix":  ["SK하이닉스", "SK hynix", "하이닉스"],
+    "SmartSens": ["SmartSens", "스마트센스", "思特威"],
+    "GalaxyCore":["GalaxyCore", "갤럭시코어", "格科微"],
+    "onsemi":    ["onsemi", "온세미", "ON Semiconductor"],
+    "STMicro":   ["STMicro", "ST마이크로"],
+    "Apple":     ["Apple", "애플", "iPhone", "아이폰"],
+    "Xiaomi":    ["Xiaomi", "샤오미"],
+    "Vivo/Oppo": ["Vivo", "비보", "Oppo", "오포", "Honor", "아너"],
+    "TSMC":      ["TSMC", "대만 TSMC"],
+    "Canon":     ["Canon", "캐논"]
+  },
+  "tickers": {
+    "005930.KS": "삼성전자",
+    "6758.T":    "Sony Group",
+    "603501.SS": "Will Semi (OmniVision)",
+    "688213.SS": "SmartSens",
+    "688728.SS": "GalaxyCore",
+    "ON":        "onsemi",
+    "000660.KS": "SK hynix",
+    "AAPL":      "Apple",
+    "1810.HK":   "Xiaomi"
+  },
+  "paper_queries": [
+    "CMOS image sensor",
+    "single-photon avalanche diode sensor",
+    "event-based vision sensor",
+    "global shutter image sensor"
+  ]
+}

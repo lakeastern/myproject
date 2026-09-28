@@ -1,0 +1,18 @@
+{
+  "_comment": "에이전트가 연결할 MCP 서버 목록. command의 {python}은 현재 파이썬 실행파일로 치환된다. allowed_tools로 노출 도구를 제한할 수 있다.",
+  "servers": {
+    "cis": {
+      "description": "자체 개발 - 이미지센서 뉴스/논문/주가 수집, DB 조회·분석",
+      "command": "{python}",
+      "args": ["mcp_servers/cis_intel_server.py"],
+      "enabled": true
+    },
+    "web": {
+      "description": "공개 MCP (npm: mcp-fetch-server) - 웹페이지 원문 조회",
+      "command": "npx",
+      "args": ["-y", "mcp-fetch-server"],
+      "allowed_tools": ["fetch_readable", "fetch_markdown"],
+      "enabled": true
+    }
+  }
+}
