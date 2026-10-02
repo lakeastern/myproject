@@ -101,7 +101,7 @@ def save_report(markdown: str, request: str, kind: str = "adhoc") -> dict:
     html_path = md_path.with_suffix(".html")
 
     md_path.write_text(markdown, encoding="utf-8")
-    body = MarkdownIt("commonmark").enable("table").render(markdown)
+    body = MarkdownIt("commonmark", {"html": False}).enable("table").render(markdown)
     chart = _price_chart_svg()
     if chart:  # 첫 번째 h2(요약) 다음 섹션 앞에 차트 삽입
         idx = [mm.start() for mm in re.finditer(r"<h2>", body)]
